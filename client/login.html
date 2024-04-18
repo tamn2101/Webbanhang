@@ -1,0 +1,144 @@
+<head>
+    <link href="/webbanhang/client/css/css2/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<div class="col-md-5">
+    <div class="checkout-method__login" id="loginFormContainer">
+        <h5 class="checkout-method__title">Login</h5>
+        <h5 class="checkout-method__title">Already Registered?</h5>
+        <p class="checkout-method__subtitle">Please login below:</p>
+        <form id="loginForm" class="login-form" action="redirect.html">
+            <!-- Thay "redirect.html" bằng URL của trang bạn muốn chuyển hướng -->
+            <div class="form-group">
+                <label for="user-email">Email Address</label>
+                <input type="email" id="user-email" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="user-pass">Password</label>
+                <input type="password" id="user-pass" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Login</button>
+        </form>
+
+        <!-- Thêm phần tử để chứa thông báo đăng nhập thành công -->
+        <div id="loginSuccessMessage" class="alert alert-success mt-3" style="display: none;">
+            Login successful! Redirecting...
+        </div>
+
+        <p id="loginErrorMessage" class="alert alert-danger mt-3" style="display: none;">Invalid email or password.</p>
+
+        <p class="text-center mt-3">Not Registered? <a href="#" id="showRegisterFormLink">Register</a></p>
+    </div>
+
+    <div class="checkout-method__login" id="registerFormContainer" style="display: none;">
+        <h5 class="checkout-method__title">Register</h5>
+        <h5 class="checkout-method__title">New User?</h5>
+        <p class="checkout-method__subtitle">Please register below:</p>
+        <form id="registerForm" class="register-form" action="redirect.html">
+            <!-- Thay "redirect.html" bằng URL của trang bạn muốn chuyển hướng -->
+            <div class="form-group">
+                <label for="name">Username</label>
+                <input type="text" id="name" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="phone">Phone</label>
+                <input type="tel" id="phone" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="address">Address</label>
+                <input type="text" id="address" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Register</button>
+        </form>
+        <!-- Thêm phần tử để chứa thông báo đăng ký thành công -->
+        <div id="registerSuccessMessage" class="alert alert-success mt-3" style="display: none;">
+            Registration successful! Redirecting...
+        </div>
+
+        <p id="registerErrorMessage" class="alert alert-danger mt-3" style="display: none;">Registration failed. Please try again.</p>
+
+        <p class="text-center mt-3">Already Registered? <a href="#" id="showLoginFormLink">Login</a></p>
+    </div>
+</div>
+
+<script>
+    document.getElementById('showRegisterFormLink').addEventListener('click', function(event) {
+        event.preventDefault();
+        document.getElementById('loginFormContainer').style.display = 'none';
+        document.getElementById('registerFormContainer').style.display = 'block';
+    });
+
+    document.getElementById('showLoginFormLink').addEventListener('click', function(event) {
+        event.preventDefault();
+        document.getElementById('loginFormContainer').style.display = 'block';
+        document.getElementById('registerFormContainer').style.display = 'none';
+    });
+
+    document.getElementById('loginForm').addEventListener('submit', async function(event) {
+        event.preventDefault();
+        const email = document.getElementById('user-email').value;
+        const password = document.getElementById('user-pass').value;
+        const formData = {
+            email: email,
+            password: password
+        };
+        try {
+            const response = await fetch('http://localhost:3000/users/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            });
+            if (response.ok) {
+                // Điều hướng sau khi đăng nhập thành công
+                window.location.href = 'nhathuoc.html'; // Thay "redirect.html" bằng URL của trang bạn muốn chuyển hướng
+            } else {
+                document.getElementById('loginErrorMessage').style.display = 'block';
+            }
+        } catch (error) {
+            console.error('Error logging in:', error);
+        }
+    });
+
+    document.getElementById('registerForm').addEventListener('submit', async function(event) {
+        event.preventDefault();
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        const phone = document.getElementById('phone').value;
+        const address = document.getElementById('address').value;
+        const password = document.getElementById('password').value;
+        const formData = {
+            name: name,
+            email: email,
+            phone: phone,
+            address: address,
+            password: password
+        };
+        try {
+            const response = await fetch('http://localhost:3000/users/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            });
+            if (response.ok) {
+                // Điều hướng sau khi đăng ký thành công
+                window.location.href = 'redirect.html'; // Thay "redirect.html" bằng URL của trang bạn muốn chuyển hướng
+            } else {
+                document.getElementById('registerErrorMessage').style.display = 'block';
+            }
+        } catch (error) {
+            console.error('Error registering user:', error);
+        }
+    });
+</script>
